@@ -44,7 +44,7 @@ jobs:
       - name: Run MLflow Project
         shell: bash -l {0}
         run: |
-            mlflow run MLproject --env-manager=local 
+            mlflow run MLproject --env-manager=conda 
 
       - name: Save MLflow artifacts
         shell: bash -l {0}
