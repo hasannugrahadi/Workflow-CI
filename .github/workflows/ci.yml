@@ -26,6 +26,14 @@ jobs:
           activate-environment: mlflow-env
           python-version: "3.12"
           
+      - name: Debug MLflow
+        shell: bash -l {0}
+        run: |
+          which python
+          python --version
+          mlflow --version
+          echo "MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI"
+          
       - name: Install MLflow
         shell: bash -l {0}
         run: |
