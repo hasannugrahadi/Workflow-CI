@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches:
@@ -7,17 +6,16 @@ on:
   pull_request:
     branches:
       - main
-
 permissions:
   contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
@@ -32,33 +30,20 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install mlflow==2.19.0
 
-      - name: Check Environment
-        shell: bash -l {0}
-        run: |
-          which python
-          python --version
-          python -m pip show mlflow
-          python -m mlflow --version
-          conda info --envs
-
       - name: Run MLflow Project
         shell: bash -l {0}
         run: |
-            mlflow run MLproject --env-manager=conda 
+          mlflow run MLproject --env-manager=local
 
       - name: Save MLflow artifacts
         shell: bash -l {0}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git lfs install
           git lfs track "mlruns/**"
-
           git add .gitattributes
           git commit -m "Configure Git LFS" || true
-
           git add -f mlruns/
           git commit -m "Save mlruns from CI run" || true
-
           git push origin main
